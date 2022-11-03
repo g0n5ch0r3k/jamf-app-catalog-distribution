@@ -18,6 +18,7 @@ This Script can be used to fill a plist file with a app and a install state (ins
 - Script will check if custom plist file and path is provided and use the infos if provided. Otherwise it will use the default values
 
 - If a reqired field is empty, the script will fail and echo the error of the missing attribute
+- Actually required is "Display name, App name and request state"
 
 - The Script will add the app and the install state (install/uninstall) to the plist
 
