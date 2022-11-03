@@ -4,8 +4,8 @@ Extension Attribute will read the "/Library/Preferences/jamf.catalogsoftware.dis
 
 Output will be like:
 <result>Slack.app = uninstall
-Discord.app = install
-Google Chrome.app = uninstall</result>
+  Discord.app = install
+  Google Chrome.app = uninstall</result>
 
 With a SmartGroup you could capture the desired app, state and add the app from the Jamf Catalog to the smart group to enforce a installation
 
