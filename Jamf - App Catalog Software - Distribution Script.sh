@@ -2,7 +2,7 @@
 ##################################################
 # 
 # Jamf - Catalog Software - Distribution Script
-# v4
+# v5
 #
 # by Stephan Gonschorek
 #
@@ -41,13 +41,13 @@ plistbuddy=/usr/libexec/PlistBuddy
 # $9  - Preferences path (Default: "/Library/Preferences/")
 # $10 - run Silent (true, leave blank for false)
 if [[ $testing == true ]]; then
-	four="Google Chrome"
-	five="Google Chrome.app"
-	six="uninstall"
-	seven=/var/tmp/jamf.software.log
+	four="Discord"
+	five="Discord.app"
+	six="install"
+	seven="/var/tmp/jamf.software.log"
 	eight="jamf.catalogsoftware.distribution.plist"
 	nine="/Library/Preferences/"
-	ten="$10"
+	ten="true"
 else
 	four="$4"
 	five="$5"
@@ -55,35 +55,40 @@ else
 	seven="$7"
 	eight="$8"
 	nine="$9"
-	ten="$10"
+	ten=${10}
 fi
 
-# // CHECK IF LOG SPECIFIED
-#date > $eventlog
+echo "--> CHECK IF LOG PATH IS EMPTY" >> $seven
 if [[ -z "$seven" ]]; then
-	eventlog=/var/tmp/jamf.software.log
-	echo "[STATE] USE DEFAULT LOG PATH: $eventlog"
+	seven="/var/tmp/jamf.software.log"
+	echo "NO CUSTOM LOG PATH PROVIDED. USE $seven" >> $seven
 else
-	echo "[STATE] USE CUSTOM LOG PATH: $seven"
+	echo "[DISPLAY NAME] $six" >> $seven
 fi
+
+
+echo "LOG: $seven" >> $seven
 
 ##################################################
 # // CHECK IF CUSTOM PLIST FILE >> $log
 ##################################################
-echo "TESTING MODE: $testing"
-echo "LOG PATH: $log"
+echo "##################################################" >> $seven
+echo "TESTING MODE: $testing" >> $seven
+echo "LOG PATH: $seven" >> $seven
+datenow=$(date)
+echo "$datenow" >> "$seven"
 
 ##################################################
 # 
 # // CHECK IF CUSTOM PLIST FILE
 #
 ##################################################
-echo "CHECK IF CUSTOM PLIST FILE"
+echo "--> CHECK IF CUSTOM PLIST FILE" >> $seven
 if [[ -z "$eight" ]]; then
 	plist="jamf.catalogsoftware.distribution.plist"
-	echo "[STATE] USE DEFAULT PLIST NAME: $plist"
+	echo "[STATE] USE DEFAULT PLIST NAME: $plist" >> $seven
 else
-	echo "[STATE] USE CUSTOM PLIST NAME: $eight"
+	echo "[STATE] USE CUSTOM PLIST NAME: $eight" >> $seven
 	plist="$eight"
 fi
 
@@ -92,12 +97,12 @@ fi
 # // CHECK IF CUSTOM PLIST PATH
 #
 ##################################################
-echo "CHECK IF CUSTOM PLIST PATH"
+echo "--> CHECK IF CUSTOM PLIST PATH" >> $seven
 if [[ -z "$nine" ]]; then
 	plistpath="/Library/Preferences/"
-	echo "[STATE] USE DEFAULT PLIST PATH: $plistpath"
+	echo "[STATE] USE DEFAULT PLIST PATH: $plistpath" >> $seven
 else
-	echo "[STATE] USE CUSTOM PLIST PATH: $nine"
+	echo "[STATE] USE CUSTOM PLIST PATH: $nine" >> $seven
 	plistpath="$nine"
 fi
 
@@ -106,72 +111,228 @@ fi
 # // CHECK IF PLIST EXIST
 #
 ##################################################
-echo "CHECK IF PLIST EXIST"
+echo "--> CHECK IF PLIST EXIST" >> $seven
 		while ! [[ -f "$plistpath$plist" ]]; do
 			sudo $plistbuddy -c "save" $plistpath$plist
 		done
-		echo "[STATE] $plistpath$plist EXIST"
+		echo "[STATE] $plistpath$plist EXIST" >> $seven
 		
 ##################################################
 #
 # // CHECK APPLICATIONS ARRAY IN PLIST
 #
 ##################################################
-echo "CHECK APPLICATIONS ARRAY IN PLIST"
+echo "--> CHECK APPLICATIONS ARRAY IN PLIST" >> $seven
 plistapplicationsarray=$($plistbuddy -c "print :applications" $plistpath$plist || printf '0')
 		if [[ $plistapplicationsarray = 0 ]]; then
-				echo "[STATE] CREATE APPLICATIONS ARRAY"
+				echo "[STATE] CREATE APPLICATIONS ARRAY" >> $seven
 			sudo $plistbuddy -c "Add :applications array" $plistpath$plist
 				
 		else
-				echo "[STATE] APPLICATIONS ARRAY EXIST"
+				echo "[STATE] APPLICATIONS ARRAY EXIST" >> $seven
 		fi
+
+##################################################
+#
+# // CHECK LOGGING ARRAY IN PLIST
+#
+##################################################
+echo "--> CHECK INSTALLED ARRAY IN PLIST" >> $seven
+plistinstalledarray=$($plistbuddy -c "print :installed" $plistpath$plist || printf '0')
+if [[ $plistinstalledarray = 0 ]]; then
+	echo "[STATE] CREATE INSTALLED ARRAY" >> $seven
+	sudo $plistbuddy -c "Add :installed array" $plistpath$plist
+	
+else
+	echo "[STATE] INSTALLED ARRAY EXIST" >> $seven
+fi
 
 ##################################################
 # 
 # // CHECK IF SOMETHING NOT PROVIDED
 #
 ##################################################
-echo "CHECK IF DISPLAY NAME IS EMPTY"
+echo "--> CHECK IF DISPLAY NAME IS EMPTY" >> $seven
 if [[ -z "$four" ]]; then
-	echo "[FAILED] Display name is empty. Please enter a value!"
-	exit 1
-fi
-echo "CHECK IF APP NAME IS EMPTY"
-if [[ -z "$five" ]]; then
-	echo "[FAILED] App name Name is empty. Please enter a value!"
+	echo "[FAILED] Display name is empty. Please enter a value!" >> $seven
 	exit 1
 else
-	appname=${five// /_}
-	echo "REPLACE SPACES BY UNDERSCORE"
+	echo "[DISPLAY NAME] $four" >> $seven
 fi
-echo "CHECK IF APP STATE IS EMPTY"
-if [[ -z "$six" ]]; then
-	echo "[FAILED] App has no request state. Should be true for install or false for uninstall!"
+echo "--> CHECK IF APP NAME IS EMPTY" >> $seven
+if [[ -z "$five" ]]; then
+	echo "[FAILED] App name Name is empty. Please enter a value!" >> $seven
 	exit 1
+else
+	echo "[APP NAME] $five" >> $seven
+	appname=${five// /_}
+	echo "appname: $appname"
+	echo "REPLACE SPACES BY UNDERSCORE" >> $seven
 fi
+echo "--> CHECK IF APP STATE IS EMPTY" >> $seven
+if [[ -z "$six" ]]; then
+	echo "[FAILED] App has no request state. Should be true for install or false for uninstall!" >> $seven
+	exit 1
+else
+	echo "[DISPLAY NAME] $six" >> $seven
+fi
+
 
 ##################################################
 #
 # // ADD REQUEST STATE TO PLIST
 #
 ##################################################
-echo "ADD REQUEST STATE TO PLIST"
+echo "--> ADD REQUEST STATE TO PLIST" >> $seven
 appinplist=$($plistbuddy -c "print :applications:array:$appname" $plistpath$plist || printf '0')
 echo "APPINPLIST STATE: $appinplist"
 		if [[ $appinplist = 0 ]]; then
 				sudo $plistbuddy -c "Add :applications:array:$appname string $six" $plistpath$plist
-				echo "[STATE] ADD $five REQUEST STATE: $six"
+				echo "[STATE] ADD $five REQUEST STATE: $six" >> $seven
 		else
-				echo "[STATE] $five REQUEST STATE IN PLIST: $appinplist"
+				echo "[STATE] $five REQUEST STATE IN PLIST: $appinplist" >> $seven
 			sudo $plistbuddy -c "set :applications:array:$appname $six" $plistpath$plist
-				echo "[STATE] SET $five REQUEST STATE TO: $six"
+				echo "[STATE] SET $five REQUEST STATE TO: $six" >> $seven
 		fi
 
 ##################################################
 #
-# // Inventory Update
+# // ADD APP INSTALL STATE
 #
 ##################################################
+echo "--> ADD INSTALL STATE TO PLIST" >> $seven
+if [[ -d "/Applications/$five" ]]; then
+	appinstalled=true
+	echo "[STATE] $five IS INSTALLED" >> $seven
+else
+	appinstalled=false
+	echo "[STATE] $five IS NOT INSTALLED" >> $seven
+fi
 
-sudo jamf recon
+echo "--> ADD INSTALL STATE TO PLIST" >> $seven
+appinstallstate=$($plistbuddy -c "print :installed:array:$appname" $plistpath$plist || printf '0')
+echo "[STATE] APPINPLIST STATE: $appinstallstate" >> $seven
+if [[ $appinstallstate = 0 ]]; then
+	sudo $plistbuddy -c "Add :installed:array:$appname bool $appinstalled" $plistpath$plist
+	echo "[STATE] ADD $five REQUEST STATE: $six" >> $seven
+else
+	echo "[STATE] $five INSTALL STATE IN PLIST: $appinstallstate" >> $seven
+	sudo $plistbuddy -c "set :installed:array:$appname $six" $plistpath$plist
+	echo "[STATE] SET $five INSTALL STATE TO: $six" >> $seven
+fi
+
+
+##################################################
+#
+# // CHECK FOR DIALOG
+#
+##################################################
+echo "--> CHECK FOR DIALOG" >> $seven
+echo "[STATE] DIALOG STATE: $ten" >> $seven
+
+if [[ ! $ten = true ]]; then
+	echo "[STATE] DIALOG NOT ENABLED" >> $seven
+	exit 0
+fi
+
+##################################################
+#
+# // START DIALOG
+#
+##################################################
+echo "--> START DIALOG" >> $seven
+dialogApp="/usr/local/bin/dialog"
+dialog_command_file="/var/tmp/dialog.log"
+# Dialog display settings, change as desired
+title="Installing $appname"
+message="Please wait while we download and install $appname. \n This could take up to 15 minutes."
+
+
+appinstallstate=$($plistbuddy -c "print :installed:array:$appname" $plistpath$plist || printf '0')
+if [[ ! $appinstallstate = true ]]; then
+	echo "[STATE] $appname not installed" >> $seven
+				sudo jamf recon
+                
+                function dialogCheck(){
+                          # Get the URL of the latest PKG From the Dialog GitHub repo
+                          dialogURL=$(curl --silent --fail "https://api.github.com/repos/bartreardon/swiftDialog/releases/latest" | awk -F '"' "/browser_download_url/ && /pkg\"/ { print \$4; exit }")
+                          # Expected Team ID of the downloaded PKG
+                          dialogExpectedTeamID="PWA5E9TQ59"
+
+                          # Check for Dialog and install if not found
+                          if [ ! -e "/Library/Application Support/Dialog/Dialog.app" ]; then
+                            echo "Dialog not found. Installing..."
+                            # Create temporary working directory
+                            workDirectory=$( /usr/bin/basename "$0" )
+                            tempDirectory=$( /usr/bin/mktemp -d "/private/tmp/$workDirectory.XXXXXX" )
+                            # Download the installer package
+                            /usr/bin/curl --location --silent "$dialogURL" -o "$tempDirectory/Dialog.pkg"
+                            # Verify the download
+                            teamID=$(/usr/sbin/spctl -a -vv -t install "$tempDirectory/Dialog.pkg" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()')
+                            # Install the package if Team ID validates
+                            if [ "$dialogExpectedTeamID" = "$teamID" ] || [ "$dialogExpectedTeamID" = "" ]; then
+                              /usr/sbin/installer -pkg "$tempDirectory/Dialog.pkg" -target /
+                            else 
+                              dialogAppleScript
+                              exitCode=1
+                              exit $exitCode
+                            fi
+                            # Remove the temporary working directory when done
+                            /bin/rm -Rf "$tempDirectory"  
+                          else echo "Dialog already found. Proceeding..."
+                          fi
+                        }
+                
+				function dialog_command(){
+					echo "$1"
+					echo "$1"  >> $dialog_command_file
+				}
+	
+				function finalise(){
+					dialog_command "overlayicon: SF=checkmark.circle.fill,palette=white,black,none,bgcolor=none"
+					dialog_command "progresstext: Install of applications complete"
+					dialog_command "progress: complete"
+					dialog_command "button1text: Done"
+					dialog_command "button1: disabled"
+                    sleep 3
+                    exit 0
+				}
+	
+				function appCheck(){
+					dialog_command "listitem: $appname: wait"
+					while [ ! -d "/Applications/$five" ]
+					do
+						echo "wait" 
+						sleep 5
+					done
+					sleep 10
+					dialog_command "progresstext: Install of $appname complete"
+					dialog_command "listitem: $appname: success"
+				}
+				dialogCheck
+	
+				dialogCMD="$dialogApp -o -p --title \"$title\" \
+				--message \"$message\" \
+				--icon \"$icon\" \
+				--overlayicon SF=arrow.down.circle.fill,palette=white,black,none,bgcolor=none \
+				--button1text \"Close\" \
+				--button1disabled" \
+	
+				listitems="$listitems --listitem '$appname'"
+				# final command to execute
+				dialogCMD="$dialogCMD $listitems"
+	
+				echo "$dialogCMD"
+				
+				eval "$dialogCMD" &
+				sleep 2
+				appCheck
+				sleep 5
+				finalise
+				sleep 5
+                exit 0
+else
+	echo "[STATE] $appname already installed" >> $seven
+	sudo jamf recon
+	exit 0
+fi
