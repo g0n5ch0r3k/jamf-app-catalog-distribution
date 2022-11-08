@@ -47,15 +47,15 @@ $10 enabled swiftDialog (Will be changed to progress bar in later release)
 
 Create the needed smart groups for the apps and assign this groups to the app catalog app.
 
-![smart_groups_1](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_1.JPG]
+![smart_groups_1](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_1.JPG)
 
-![smart_groups_2](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_2.JPG]
+![smart_groups_2](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_2.JPG)
 
 # App catalog
 
 Add the app to the smart group.
 
-![sapp catalog](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/2987ba3a7fa2e27510437fbe20f564553218c243/images/app_catalog_1.JPG]
+![sapp catalog](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/2987ba3a7fa2e27510437fbe20f564553218c243/images/app_catalog_1.JPG)
 
 # TESTING
 
