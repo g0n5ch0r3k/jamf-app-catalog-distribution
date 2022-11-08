@@ -29,7 +29,7 @@ $8 and $9 customize the plist
 
 $10 enabled swiftDialog (Will be changed to progress bar in later release)
 
-![alt text]https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/script_1.JPG)
+![alt text](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/script_1.JPG)
 
 - Script will check if custom plist file and path is provided and use the infos if provided. Otherwise it will use the default values
 
@@ -41,21 +41,21 @@ $10 enabled swiftDialog (Will be changed to progress bar in later release)
 
 # Add the Policy to Self Service 
 
-![alt text]https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/script_policy_2.JPG)
+![alt text](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/script_policy_2.JPG)
 
 # Smart Groups
 
 Create the needed smart groups for the apps and assign this groups to the app catalog app.
 
-![smart_groups_1]https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_1.JPG]
+![smart_groups_1](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_1.JPG]
 
-![smart_groups_2]https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_2.JPG]
+![smart_groups_2](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/18dd3fadfb16cc309925b4807f48677364099e56/images/smart_groups_2.JPG]
 
 # App catalog
 
 Add the app to the smart group.
 
-![sapp catalog]https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/2987ba3a7fa2e27510437fbe20f564553218c243/images/app_catalog_1.JPG]
+![sapp catalog](https://github.com/g0n5ch0r3k/jamf-app-catalog-distribution/blob/2987ba3a7fa2e27510437fbe20f564553218c243/images/app_catalog_1.JPG]
 
 # TESTING
 
