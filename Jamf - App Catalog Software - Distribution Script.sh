@@ -2,7 +2,7 @@
 ##################################################
 # 
 # Jamf - Catalog Software - Distribution Script
-# v6
+# v5
 #
 # by Stephan Gonschorek
 #
@@ -18,7 +18,7 @@
 ##################################################
 # // TESTING
 ##################################################
-testing=true
+testing=false
 
 ##################################################
 # 
@@ -260,7 +260,6 @@ if [[ ! $ten = true ]]; then
 	checkplistexist
 	checkapplicationsarray
 	checkloggingarray
-	checkprovidedvalues
 	addapprequeststate
 	addappinstallstate
 	exit 0
@@ -407,7 +406,7 @@ appinstallstate=$($plistbuddy -c "print :installed:array:$appname" $plistpath$pl
 							echo "Finish"  >> $seven
 							dialog_command "listitem: $itemtext4: success"
 							sleep 2
-
+                            dialog_command "quit: "
 							exit 0
 else
 	echo "[STATE] $appname already installed" >> $seven
