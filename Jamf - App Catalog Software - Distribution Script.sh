@@ -384,6 +384,7 @@ appinstallstate=$($plistbuddy -c "print :installed:array:$appname" $plistpath$pl
 							# calling functions
 									addapprequeststate
 									addappinstallstate
+                            sudo jamf recon
 							sleep 5		
 							
 							
